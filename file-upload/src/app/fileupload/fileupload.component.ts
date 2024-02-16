@@ -47,10 +47,10 @@ export class FileuploadComponent {
     let data = new FormData();
     for (let [key, val] of Object.entries(object)) {
       if(key === 'ImagePaths'){
-        formData.append(key, <File>val);
+        this.formData.append(key, <File>val);
         continue;
       }
-      formData.append(key, JSON.stringify(val));
+      this.formData.append(key, JSON.stringify(val));
     }
     return data;
   }

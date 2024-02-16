@@ -8,7 +8,6 @@ export interface FileInput {
   file?: File;
   fileName: string;
 }
-
 @Component({
   selector: 'app-fileupload',
   styleUrls: ['./fileupload.component.css'],
@@ -47,15 +46,23 @@ export class FileuploadComponent {
   getFormData(object: any) {
     let formData = new FormData();
     for (let [key, val] of Object.entries(object)) {
+      if(key === 'ImagePaths'){
+        formData.append(key, <File>val);
+        continue;
+      }
       formData.append(key, JSON.stringify(val));
     }
     return formData;
   }
-
-  uploadFiles() {
-    this.globalval.forEach(fileInput => {
-      this.formData.append("ImagePaths", fileInput, fileInput.name);
+  imagesToFromData(files: File[]) {
+    let formData = new FormData();
+    files.forEach(fileInput => {
+      formData.append("ImagePaths", fileInput, fileInput.name);
     });
+    return formData;
+  }
+  uploadFiles() {
+    this.formData = this.imagesToFromData(this.globalval);
 
     // this.formData.append('ImagePaths', this.globalval, this.globalval?.name)
     var productData: Product = {
@@ -90,7 +97,7 @@ export class FileuploadComponent {
     let options = { headers: headers };
 
     try {
-      this.http.post('http://localhost:5120/api/products', this.formData, options).subscribe();
+      this.http.post('https://a144-213-230-78-10.ngrok-free.app/api/products', this.formData, options).subscribe();
       //console.log(response);
       console.log("success");
     } catch (error) {
